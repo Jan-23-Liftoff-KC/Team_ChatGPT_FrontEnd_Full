@@ -4,53 +4,70 @@ import "./MobileAccordion.css";
 import { county } from "../../svg-buttons/county";
 import { businessType } from "../../svg-buttons/business-type";
 import { ownerType } from "../../svg-buttons/ownerType";
-import { useDispatch } from "react-redux";
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  businessTypeFiltersSelected,
+  locationFiltersSelected,
+  ownerTypeFiltersSelected,
+} from "../../state-redux/Store/Selectors";
 
 function MobileAccordion() {
-  const [locationFilters, setLocationFilters] = useState([]);
-  const [businessTypeFilters, setBusinessTypeFilters] = useState([]);
-  const [ownerTypeFilters, setOwnerTypeFilters] = useState([]);
+  const locationFilters = useSelector(locationFiltersSelected);
+  const ownerTypeFilters = useSelector(ownerTypeFiltersSelected);
+  const businessTypeFilters = useSelector(businessTypeFiltersSelected);
+
   const dispatch = useDispatch();
   const handleClick = (id) => {
     if (id.includes("county")) {
       const county = id.split("-")[1];
       const index = locationFilters.indexOf(county);
       if (index === -1) {
-        setLocationFilters([...locationFilters, county]);
+        // If the county is not in the locationFilters array, it gets added
+        dispatch({
+          type: "locationFilters/addFilter",
+          payload: county,
+        });
       } else {
-        setLocationFilters(
-          locationFilters.filter((location) => county !== location)
-        );
+        // If the county is already in the locationFilters array, it gets removed
+        dispatch({
+          type: "locationFilters/removeFilter",
+          payload: county,
+        });
       }
-      dispatch({ type: "locationFilters/toggleFilter", payload: county });
     }
     if (id.includes("businessType")) {
       const businessType = id.split("-")[1];
       const index = businessTypeFilters.indexOf(businessType);
       if (index === -1) {
-        setBusinessTypeFilters([...businessTypeFilters, businessType]);
+        // If the business type is not in the businessTypeFilters array, it gets added
+        dispatch({
+          type: "businessTypeFilters/addFilter",
+          payload: businessType,
+        });
       } else {
-        setBusinessTypeFilters(
-          businessTypeFilters.filter((type) => businessType !== type)
-        );
+        // If the business type is already in the businessTypeFilters array, it gets removed
+        dispatch({
+          type: "businessTypeFilters/removeFilter",
+          payload: businessType,
+        });
       }
-      dispatch({
-        type: "businessTypeFilters/toggleFilter",
-        payload: businessType,
-      });
     }
     if (id.includes("ownerType")) {
       const ownerType = id.split("-")[1];
       const index = ownerTypeFilters.indexOf(ownerType);
       if (index === -1) {
-        setOwnerTypeFilters([...ownerTypeFilters, ownerType]);
+        // If the owner type is not in the ownerTypeFilters array, it gets added
+        dispatch({
+          type: "ownerTypeFilters/addFilter",
+          payload: ownerType,
+        });
       } else {
-        setOwnerTypeFilters(
-          ownerTypeFilters.filter((owner) => ownerType !== owner)
-        );
+        // If the owner type is already in the ownerTypeFilters array, it gets removed
+        dispatch({
+          type: "ownerTypeFilters/removeFilter",
+          payload: ownerType,
+        });
       }
-      dispatch({ type: "ownerTypeFilters/toggleFilter", payload: ownerType });
     }
   };
 
